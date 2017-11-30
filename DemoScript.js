@@ -27,7 +27,7 @@ setInterval(function() {
                 console.log("diff: ", diff)
                 if(diff > 30000) {
                     console.log("diff: ", true)
-                    moduleManager.getPermissionsModule().getToken(["user.email"]);
+                    moduleManager.getPermissionsModule().getToken(["user.email", "user.dob", "user.name", "user.gender", "user.phone"]);
                 }
             }
             else {
