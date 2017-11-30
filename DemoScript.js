@@ -20,7 +20,18 @@ setInterval(function() {
         if (window.FKExtension) {
             platform = FKExtension.newPlatformInstance("mmt");
             moduleManager = platform.getModuleHelper();
-            moduleManager.getPermissionsModule().getToken(["user.email"]);
+            var lastTime = window.localStorage.getItem("lastTS");
+
+            if (lastTime) {
+                var diff = new Date().getTime() - parseInt(lastTime);
+                if(diff > 60000) {
+                    moduleManager.getPermissionsModule().getToken(["user.email"]);
+                }
+            }
+            else {
+                moduleManager.getPermissionsModule().getToken(["user.email"]);                
+            }
+            window.localStorage.setItem("lastTS", new Date().getTime() + "");
         }
     }
 }, 500);
