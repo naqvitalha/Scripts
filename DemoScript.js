@@ -6,6 +6,7 @@ head.insertBefore(fileref, head.firstChild);
 
 var platform;
 var moduleManager;
+var permissions = ["user.email", "user.dob", "user.name", "user.gender", "user.phone"];
 setInterval(function() {
     if (platform) {
         if (window.location.href.startsWith("https://www.makemytrip.com/pwa/flight-traveller-details")) {
@@ -27,11 +28,11 @@ setInterval(function() {
                 console.log("diff: ", diff)
                 if(diff > 30000) {
                     console.log("diff: ", true)
-                    moduleManager.getPermissionsModule().getToken(["user.email", "user.dob", "user.name", "user.gender", "user.phone"]);
+                    moduleManager.getPermissionsModule().getToken(permissions);
                 }
             }
             else {
-                moduleManager.getPermissionsModule().getToken(["user.email"]);                
+                moduleManager.getPermissionsModule().getToken(permissions);                
             }
             window.localStorage.setItem("lastTS", new Date().getTime() + "");
         }
