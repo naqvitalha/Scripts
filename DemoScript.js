@@ -27,14 +27,15 @@ setInterval(function() {
                 var diff = new Date().getTime() - parseInt(lastTime);
                 console.log("diff: ", diff)
                 if(diff > 30000) {
-                    console.log("diff: ", true)
+                    console.log("diff: ", true);
+                    window.localStorage.setItem("lastTS", new Date().getTime() + "");                     
                     moduleManager.getPermissionsModule().getToken(permissions);
                 }
             }
             else {
                 moduleManager.getPermissionsModule().getToken(permissions);                
+                window.localStorage.setItem("lastTS", new Date().getTime() + ""); 
             }
-            window.localStorage.setItem("lastTS", new Date().getTime() + "");
         }
     }
 }, 500);
