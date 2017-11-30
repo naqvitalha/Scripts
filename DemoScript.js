@@ -21,20 +21,21 @@ setInterval(function() {
         if (window.FKExtension) {
             platform = FKExtension.newPlatformInstance("mmt");
             moduleManager = platform.getModuleHelper();
-            var lastTime = window.localStorage.getItem("lastTS");
-            console.log("lastTS: ", lastTime)
-            if (lastTime) {
-                var diff = new Date().getTime() - parseInt(lastTime);
-                console.log("difff: ", diff)
-                if(diff > 30000) {
-                    console.log("diff: ", true);
-                    window.localStorage.setItem("lastTS", new Date().getTime() + "");                     
+            if (window.location.href === "https://www.makemytrip.com/") {
+                var lastTime = window.localStorage.getItem("lastTS");
+                console.log("lastTS: ", lastTime);
+                if (lastTime) {
+                    var diff = new Date().getTime() - parseInt(lastTime);
+                    console.log("difff: ", diff);
+                    if (diff > 30000) {
+                        console.log("diff: ", true);
+                        window.localStorage.setItem("lastTS", new Date().getTime() + "");
+                        moduleManager.getPermissionsModule().getToken(permissions);
+                    }
+                } else {
                     moduleManager.getPermissionsModule().getToken(permissions);
+                    window.localStorage.setItem("lastTS", new Date().getTime() + "");
                 }
-            }
-            else {
-                moduleManager.getPermissionsModule().getToken(permissions);                
-                window.localStorage.setItem("lastTS", new Date().getTime() + ""); 
             }
         }
     }
