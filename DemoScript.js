@@ -25,7 +25,7 @@ setInterval(function() {
             console.log("lastTS: ", lastTime)
             if (lastTime) {
                 var diff = new Date().getTime() - parseInt(lastTime);
-                console.log("diff: ", diff)
+                console.log("difff: ", diff)
                 if(diff > 30000) {
                     console.log("diff: ", true);
                     window.localStorage.setItem("lastTS", new Date().getTime() + "");                     
