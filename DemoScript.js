@@ -21,10 +21,12 @@ setInterval(function() {
             platform = FKExtension.newPlatformInstance("mmt");
             moduleManager = platform.getModuleHelper();
             var lastTime = window.localStorage.getItem("lastTS");
-
+            console.log("lastTS: ", lastTime)
             if (lastTime) {
                 var diff = new Date().getTime() - parseInt(lastTime);
+                console.log("diff: ", diff)
                 if(diff > 60000) {
+                    console.log("diff: ", true)
                     moduleManager.getPermissionsModule().getToken(["user.email"]);
                 }
             }
