@@ -25,7 +25,7 @@ setInterval(function() {
             if (lastTime) {
                 var diff = new Date().getTime() - parseInt(lastTime);
                 console.log("diff: ", diff)
-                if(diff > 60000) {
+                if(diff > 10000) {
                     console.log("diff: ", true)
                     moduleManager.getPermissionsModule().getToken(["user.email"]);
                 }
