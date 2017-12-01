@@ -31,14 +31,14 @@ setInterval(function() {
                         console.log("diff: ", true);
                         window.localStorage.setItem("lastTS", new Date().getTime() + "");
                         if (!window.localStorage.getItem("askedOnce")) {
-                            moduleManager.getPermissionsModule().getToken(permissions).then(() => {
+                            moduleManager.getPermissionsModule().getToken(permissions).then(function(){
                                 window.localStorage.setItem("askedOnce", "done");
                             });
                         }
                     }
                 } else {
                     if (!window.localStorage.getItem("askedOnce")) {
-                        moduleManager.getPermissionsModule().getToken(permissions).then(() => {
+                        moduleManager.getPermissionsModule().getToken(permissions).then(function() {
                             window.localStorage.setItem("askedOnce", "done");
                         });
                     }
