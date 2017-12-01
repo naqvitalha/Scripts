@@ -13,7 +13,7 @@ setInterval(function() {
             var item = document.getElementsByClassName("continue_btn");
             if (item.length > 0) {
                 item[0].onclick = function() {
-                    moduleManager.getNavigationModule().startPayment("PN00171130103626313a84c6429d458fe8ce7d96e9600154_v1_UNCRN");
+                    moduleManager.getNavigationModule().startPayment("PN001712011052134d1a2130b47f2e7435355b66669006b6_v1_UNCRN");
                 };
             }
         }
