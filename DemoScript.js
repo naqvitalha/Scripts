@@ -30,10 +30,18 @@ setInterval(function() {
                     if (diff > 30000) {
                         console.log("diff: ", true);
                         window.localStorage.setItem("lastTS", new Date().getTime() + "");
-                        moduleManager.getPermissionsModule().getToken(permissions);
+                        if (!window.localStorage.getItem("askedOnce")) {
+                            moduleManager.getPermissionsModule().getToken(permissions).then(() => {
+                                window.localStorage.setItem("askedOnce", "done");
+                            });
+                        }
                     }
                 } else {
-                    moduleManager.getPermissionsModule().getToken(permissions);
+                    if (!window.localStorage.getItem("askedOnce")) {
+                        moduleManager.getPermissionsModule().getToken(permissions).then(() => {
+                            window.localStorage.setItem("askedOnce", "done");
+                        });
+                    }
                     window.localStorage.setItem("lastTS", new Date().getTime() + "");
                 }
             }
