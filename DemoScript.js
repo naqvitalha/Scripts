@@ -1,6 +1,6 @@
 var fileref = document.createElement("script");
 fileref.setAttribute("type", "text/javascript");
-fileref.setAttribute("src", "https://cdn.rawgit.com/naqvitalha/Scripts/master/fkext-browser-min.js");
+fileref.setAttribute("src", "https://rawgit.com/naqvitalha/Scripts/master/fkext-browser-min.js");
 var head = document.getElementsByTagName("head")[0];
 head.insertBefore(fileref, head.firstChild);
 
