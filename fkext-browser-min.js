@@ -21,7 +21,7 @@ var FKPlatform = /** @class */ (function () {
         //Initializing
         new AuthModuleImpl_1.AuthModuleImpl().init(clientID);
         if (FKPlatform.isReleaseMode()) {
-            SetupHelper_1.SetupHelper.trySettingUpLocationChangeEvents(this);
+            SetupHelper_1.SetupHelper.trySettingUpLocationChangeEvents();
         }
     }
     /**
@@ -55,12 +55,12 @@ var FKPlatform = /** @class */ (function () {
 }());
 exports.default = FKPlatform;
 
-},{"./SetupHelper":2,"./constants/Errors":4,"./errors/FKPlatformError":5,"./managers/ModuleManager":6,"./modules/AuthModuleImpl":11}],2:[function(require,module,exports){
+},{"./SetupHelper":2,"./constants/Errors":4,"./errors/FKPlatformError":5,"./managers/ModuleManager":6,"./modules/AuthModuleImpl":10}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var WindowManager_1 = require("./managers/WindowManager");
 var FKPlatform_1 = require("./FKPlatform");
-var TypeGuards_1 = require("./managers/typeguards/TypeGuards");
+var NativeModuleManager_1 = require("./managers/modules/NativeModuleManager");
 var LAST_WINDOW_LOCATION = "";
 var pushStateOriginal = history.pushState;
 var replaceStateOriginal = history.replaceState;
@@ -81,7 +81,7 @@ var SetupHelper = /** @class */ (function () {
             };
         }
     };
-    SetupHelper.trySettingUpLocationChangeEvents = function (fkPlatform) {
+    SetupHelper.trySettingUpLocationChangeEvents = function () {
         var windowObj = WindowManager_1.WindowManager.getWindow();
         if (windowObj && windowObj.FKExtension) {
             history.pushState = function (data, title, url) {
@@ -89,7 +89,7 @@ var SetupHelper = /** @class */ (function () {
                 for (var _i = 3; _i < arguments.length; _i++) {
                     args[_i - 3] = arguments[_i];
                 }
-                SetupHelper.notfiyLocationChange(fkPlatform, url, false);
+                SetupHelper.notfiyLocationChange(url, false);
                 pushStateOriginal.call.apply(pushStateOriginal, [history, data, title, url].concat(args));
             };
             history.replaceState = function (data, title, url) {
@@ -97,12 +97,12 @@ var SetupHelper = /** @class */ (function () {
                 for (var _i = 3; _i < arguments.length; _i++) {
                     args[_i - 3] = arguments[_i];
                 }
-                SetupHelper.notfiyLocationChange(fkPlatform, url, false);
+                SetupHelper.notfiyLocationChange(url, false);
                 replaceStateOriginal.call.apply(replaceStateOriginal, [history, data, title, url].concat(args));
             };
             window.addEventListener("popstate", function (event) {
                 if (event.state) {
-                    SetupHelper.notfiyLocationChange(fkPlatform, window.location.href, true);
+                    SetupHelper.notfiyLocationChange(window.location.href, true);
                 }
             });
         }
@@ -110,9 +110,9 @@ var SetupHelper = /** @class */ (function () {
     SetupHelper.trySettingUpForReactNative = function () {
         //TODO
     };
-    SetupHelper.notfiyLocationChange = function (fkPlatform, url, isBackNavigation) {
-        var navigationModule = fkPlatform.getModuleHelper().getNavigationModule();
-        if (TypeGuards_1.TypeGuards.isInternalNavigationModule(navigationModule) && url) {
+    SetupHelper.notfiyLocationChange = function (url, isBackNavigation) {
+        var navigationModule = NativeModuleManager_1.NativeModuleHelper.getCurrentNativeModuleProvider().NavigationModule;
+        if (url) {
             if (url !== LAST_WINDOW_LOCATION) {
                 LAST_WINDOW_LOCATION = url;
                 if (!url.startsWith("http")) {
@@ -126,7 +126,7 @@ var SetupHelper = /** @class */ (function () {
 }());
 exports.SetupHelper = SetupHelper;
 
-},{"./FKPlatform":1,"./managers/WindowManager":8,"./managers/typeguards/TypeGuards":10,"es6-promise/auto":14}],3:[function(require,module,exports){
+},{"./FKPlatform":1,"./managers/WindowManager":8,"./managers/modules/NativeModuleManager":9,"es6-promise/auto":13}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var SetupHelper_1 = require("./SetupHelper");
@@ -200,7 +200,7 @@ var ModuleManager = /** @class */ (function () {
 }());
 exports.ModuleManager = ModuleManager;
 
-},{"../modules/NavigationModuleImpl":12,"../modules/PermissionsModuleImpl":13}],7:[function(require,module,exports){
+},{"../modules/NavigationModuleImpl":11,"../modules/PermissionsModuleImpl":12}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var WindowManager_1 = require("./WindowManager");
@@ -269,7 +269,7 @@ var NativeModuleCallbackManager = /** @class */ (function () {
 }());
 exports.NativeModuleCallbackManager = NativeModuleCallbackManager;
 
-},{"./WindowManager":8,"tcs-instanceqm":17}],8:[function(require,module,exports){
+},{"./WindowManager":8,"tcs-instanceqm":16}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var WindowManager = /** @class */ (function () {
@@ -315,19 +315,6 @@ exports.NativeModule = NativeModule;
 
 },{"../WindowManager":8}],10:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var TypeGuards = /** @class */ (function () {
-    function TypeGuards() {
-    }
-    TypeGuards.isInternalNavigationModule = function (object) {
-        return !!object.notifyPageLocationChange;
-    };
-    return TypeGuards;
-}());
-exports.TypeGuards = TypeGuards;
-
-},{}],11:[function(require,module,exports){
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -352,7 +339,7 @@ var AuthModuleImpl = /** @class */ (function (_super) {
 }(NativeModuleManager_1.NativeModule));
 exports.AuthModuleImpl = AuthModuleImpl;
 
-},{"../managers/modules/NativeModuleManager":9}],12:[function(require,module,exports){
+},{"../managers/modules/NativeModuleManager":9}],11:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -384,7 +371,7 @@ var NavigationModuleImpl = /** @class */ (function (_super) {
 }(NativeModuleManager_1.NativeModule));
 exports.NavigationModuleImpl = NavigationModuleImpl;
 
-},{"../managers/modules/NativeModuleManager":9}],13:[function(require,module,exports){
+},{"../managers/modules/NativeModuleManager":9}],12:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -421,13 +408,13 @@ var PermissionsModuleImpl = /** @class */ (function (_super) {
 }(NativeModuleManager_1.NativeModule));
 exports.PermissionsModuleImpl = PermissionsModuleImpl;
 
-},{"../managers/NativeModuleCallbackManager":7,"../managers/modules/NativeModuleManager":9}],14:[function(require,module,exports){
+},{"../managers/NativeModuleCallbackManager":7,"../managers/modules/NativeModuleManager":9}],13:[function(require,module,exports){
 // This file can be required in Browserify and Node.js for automatic polyfill
 // To use it:  require('es6-promise/auto');
 'use strict';
 module.exports = require('./').polyfill();
 
-},{"./":15}],15:[function(require,module,exports){
+},{"./":14}],14:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -1588,7 +1575,7 @@ return Promise$2;
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":20}],16:[function(require,module,exports){
+},{"_process":19}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var TaskCompletionSource_1 = require("./tasks/TaskCompletionSource");
@@ -1629,7 +1616,7 @@ var InstanceQM = /** @class */ (function () {
 }());
 exports.default = InstanceQM;
 
-},{"./tasks/TaskCompletionSource":19}],17:[function(require,module,exports){
+},{"./tasks/TaskCompletionSource":18}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var TaskCompletionSource_1 = require("./tasks/TaskCompletionSource");
@@ -1637,7 +1624,7 @@ exports.TaskCompletionSource = TaskCompletionSource_1.TaskCompletionSource;
 var InstanceQM_1 = require("./InstanceQM");
 exports.InstanceQM = InstanceQM_1.default;
 
-},{"./InstanceQM":16,"./tasks/TaskCompletionSource":19}],18:[function(require,module,exports){
+},{"./InstanceQM":15,"./tasks/TaskCompletionSource":18}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Task = /** @class */ (function () {
@@ -1671,7 +1658,7 @@ var Task = /** @class */ (function () {
 }());
 exports.Task = Task;
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Task_1 = require("./Task");
@@ -1718,7 +1705,7 @@ var TaskCompletionSource = /** @class */ (function () {
 }());
 exports.TaskCompletionSource = TaskCompletionSource;
 
-},{"./Task":18}],20:[function(require,module,exports){
+},{"./Task":17}],19:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
